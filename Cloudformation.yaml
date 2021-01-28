@@ -12,7 +12,7 @@ Resources:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: t2.micro
-      ImageId: ami-06ce513624b435a22 # AMI iD might be invalid after a while, If error during deployment update AMI ID
+      ImageId: ami-06ce513624b435a22 # AMI iD might be invalid after a while, If error during deployment update AMI ID Amazon linux 2
       UserData:
         'Fn::Base64':
           !Sub |
