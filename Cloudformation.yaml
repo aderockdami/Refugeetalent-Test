@@ -1,0 +1,37 @@
+Resources:
+  EC2SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+        GroupDescription: Allow http to client host
+        SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+  Ec2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      ImageId: ami-06ce513624b435a22 # AMI iD might be invalid after a while, If error during deployment update AMI ID
+      UserData:
+        'Fn::Base64':
+          !Sub |
+            #!/bin/bash
+            sudo su
+            sudo yum update -y
+            sudo amazon-linux-extras install -y lamp-mariadb10.2-php7.2 php7.2
+            sudo yum install -y httpd mariadb-server
+            sudo systemctl start httpd
+            sudo systemctl enable httpd
+            sudo systemctl is-enabled httpd
+            sudo yum install git -y
+            sudo git clone https://github.com/banago/simple-php-website.git /var/www/html # Access php app with Instance public-IP:80
+
+
+      SecurityGroups:
+        - !Ref EC2SecurityGroup
+      Tags:
+        - Key: Name
+          Value: My EC2 Instance
+        - Key: Type
+          Value: Worker Instance
